@@ -4,7 +4,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "commander": "^11.0.0"
+    "commander": "^11.0.0",
+    "toml": "^3.0.0"
   },
   "name": "til-tool",
   "description": "A command-line tool for authoring \"Today I Learned\" posts in Markdown, which can be converted to HTML for publishing on the web",

@@ -6,6 +6,7 @@ import { readDirectory } from "./utility/readDirectory";
 import path from "path";
 import fs from "fs";
 const program = new Command();
+import toml from "toml";
 
 // Command line inter face to use options
 program
@@ -21,9 +22,36 @@ program.argument("<fileName/dirName>", "converts file to html");
 program.option("-l, --lang <language>", "indicates the language to use");
 program.option("-o, --output <dirName>", "creates a specified directory");
 program.option("-s, --stylesheet <stylesheetURL>", "sets a stylesheet to HTML");
+program.option("-c, --config <configFile>", "path to TOML-based config file"); // adding this line for config file
 const options = program.opts();
 program.parse(process.argv);
 const arg = program.args[0];
+const configFile = options.config;
+// Function to handle errors and exit with a message
+function handleError(message: string) {
+  console.error(message);
+  process.exit(-1);
+}
+
+try {
+  const configData = fs.readFileSync(configFile, "utf8");
+  const config = toml.parse(configData);
+
+  // Handle errors properly by checking the type of 'error'
+  if (typeof Error === 'object' && Error !== null && 'message' in Error) {
+    handleError(`Error reading or parsing config file: ${(Error as Error).message}`);
+  } else {
+    handleError(`Error reading or parsing config file: ${Error}`);
+  }
+} catch (error) {
+  handleError(`Error reading or parsing config file: ${error}`);
+}
+
+// Validate options and handle defaults
+//const langValue = options.lang || ""; // Use default if not provided
+//const outputValue = options.output || "til"; // Use "til" as the default directory
+//const styleValue = options.stylesheet || ""; // Use default if not provided
+
 const langValue = program.opts().lang;
 const outputValue = program.opts().output;
 const styleValue = program.opts().stylesheet;
